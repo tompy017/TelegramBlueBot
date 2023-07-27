@@ -19,7 +19,7 @@
             <artifactId>telegrambots</artifactId>
             <version>6.7.0</version>
         </dependency>
-<!--        Update commons-codec to a newer version than 1.11 from telegrambots / security warning-->
+<!--        Update commons-codec to a newer version than 1.11 from telegram-bots dependency/ security warning-->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>

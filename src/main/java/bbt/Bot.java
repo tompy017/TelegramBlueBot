@@ -12,15 +12,16 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        // We check if the update has a message and the message has text
-        if (update.hasMessage() && update.getMessage().hasText()) {
+        // We check if the update has a message
+        if (update.hasMessage()) {
 
-            String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
+
+            String response = CommandHandler.processMessage(update);
 
             SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
             message.setChatId(chatId);
-            message.setText(messageText);
+            message.setText(response);
 
             try {
                 execute(message); // Call method to send the message
