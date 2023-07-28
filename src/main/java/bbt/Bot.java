@@ -5,10 +5,33 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class Bot extends TelegramLongPollingBot {
-    // TODO: create config file to move the bot's token and username there
-    private final String USERNAME = "argBlueBot";
-    private final String TOKEN = "6388572442:AAGduSp5jCGQObKNv5hMNtoH2jpCJ16J87s";
+    private String username;
+    private String token;
+
+    public Bot() {
+        loadConfig();
+    }
+
+    // Load configuration from config.properties file
+    private void loadConfig() {
+        try {
+            Properties properties = new Properties();
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("config.properties");
+            properties.load(inputStream);
+
+            this.username = properties.getProperty("bot.username");
+            this.token = properties.getProperty("bot.token");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error loading config file");
+        }
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -16,15 +39,15 @@ public class Bot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
 
             long chatId = update.getMessage().getChatId();
-
             String response = CommandHandler.processMessage(update);
 
-            SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
+            // Create a SendMessage object with mandatory fields
+            SendMessage message = new SendMessage();
             message.setChatId(chatId);
             message.setText(response);
 
             try {
-                execute(message); // Call method to send the message
+                execute(message); // Send the reply
             } catch (TelegramApiException e) {
                 e.printStackTrace();
             }
@@ -33,11 +56,11 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return USERNAME;
+        return username;
     }
 
     @Override
     public String getBotToken() {
-        return TOKEN;
+        return token;
     }
 }

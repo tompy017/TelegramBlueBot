@@ -20,7 +20,7 @@ public class JsonAPIClient {
 
             HttpClient httpClient = HttpClient.newHttpClient(); //in charge of making requests and receiving responses
 
-            HttpRequest httpRequest = HttpRequest.newBuilder()  // makes the request with the url
+            HttpRequest httpRequest = HttpRequest.newBuilder()  // make the request with the url
                     .uri(URI.create(this.apiUrl))
                     .GET()
                     .build();

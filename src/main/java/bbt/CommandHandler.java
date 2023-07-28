@@ -10,26 +10,16 @@ public class CommandHandler {
         //check if the update has a message and the message has text
         if (update.getMessage().hasText()) {
 
-            String apiUrl = "https://api.bluelytics.com.ar/v2/latest";
-            String receivedMsg = update.getMessage().getText();     // user message
-            //long chatId = update.getMessage().getChatId();
+            String receivedMsg = update.getMessage().getText().toLowerCase();     // user message
 
             if (receivedMsg.startsWith("/start") || receivedMsg.startsWith("/help")) {
                 return menuCommands();
 
             } else if (receivedMsg.startsWith("/dolar")) {
-                JsonAPIClient client = new JsonAPIClient(apiUrl);
-                JsonToCurrencyRates converter = new JsonToCurrencyRates();
-                CurrencyRates rates = converter.jsonToCurrencyRates(client.getJsonAsString());
-
-                return dolarRatesReply(rates);
+                return dolarRatesReply(fetchData());
 
             } else if (receivedMsg.startsWith("/euro")) {
-                JsonAPIClient client = new JsonAPIClient(apiUrl);
-                JsonToCurrencyRates converter = new JsonToCurrencyRates();
-                CurrencyRates rates = converter.jsonToCurrencyRates(client.getJsonAsString());
-
-                return euroRatesReply(rates);
+                return euroRatesReply(fetchData());
 
             } else {
                 return "Unknown command\n" + menuCommands();
@@ -41,6 +31,14 @@ public class CommandHandler {
         }
     }
 
+    private static CurrencyRates fetchData() {
+        String apiUrl = "https://api.bluelytics.com.ar/v2/latest";
+        JsonAPIClient client = new JsonAPIClient(apiUrl);
+        JsonToCurrencyRates converter = new JsonToCurrencyRates();
+        CurrencyRates rates = converter.jsonToCurrencyRates(client.getJsonAsString());
+
+        return rates;
+    }
 
 
     private static String dolarRatesReply(CurrencyRates currencyRates) {
@@ -55,7 +53,7 @@ public class CommandHandler {
 
         response.append("Oficial VENTA: $").append(
                 currencyRates.getOficialValues().getValueSell())
-                .append("\n");
+                .append("\n\n");
 
         response.append("Blue COMPRA: $").append(
                 currencyRates.getBlueValues().getValueBuy())
@@ -81,7 +79,7 @@ public class CommandHandler {
 
         response.append("Oficial VENTA: $").append(
                 currencyRates.getOficialEuroValues().getValueSell())
-                .append("\n");
+                .append("\n\n");
 
         response.append("Blue COMPRA: $").append(
                 currencyRates.getBlueEuroValues().getValueBuy())
@@ -95,7 +93,7 @@ public class CommandHandler {
     }
 
     public static String menuCommands() {
-        return "/dolar para obtener la cotizacion oficial y blue del dólar\n" +
-                "/euro para obtener la cotizacion oficial y blue del EURO";
+        return "Comandos:\n/dolar para obtener la cotización oficial y blue del dólar\n" +
+                "/euro para obtener la cotización oficial y blue del EURO";
     }
 }
